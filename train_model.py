@@ -1,38 +1,28 @@
 # train_model.py
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
 import joblib
 
-# Sample data
+# Sample data — replace with your dataset
 data = {
-    "text": [
-        "Congratulations! You’ve won a free ticket.",
-        "Let's schedule our team meeting for tomorrow.",
-        "Your invoice for the recent purchase is attached.",
-        "Limited offer! Buy one get one free.",
-        "Project deadline is next Friday. Please review.",
-    ],
-    "label": ["spam", "work", "finance", "spam", "work"]
+    'text': ["Win money now!", "Hello friend", "Get free offer", "Meeting at 10", "Claim prize now"],
+    'label': [1, 0, 1, 0, 1]  # 1=Spam, 0=Not Spam
 }
+
 df = pd.DataFrame(data)
 
-# Encode labels
-label_encoder = LabelEncoder()
-df['encoded'] = label_encoder.fit_transform(df['label'])
+# Vectorization
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(df['text'])
+y = df['label']
 
-# Create pipeline
-model = Pipeline([
-    ('tfidf', TfidfVectorizer()),
-    ('nb', MultinomialNB())
-])
+# Train the model
+model = LogisticRegression()
+model.fit(X, y)
 
-# Train
-model.fit(df['text'], df['encoded'])
+# Save model and vectorizer
+joblib.dump(model, 'model.pkl')
+joblib.dump(vectorizer, 'vectorizer.pkl')
 
-# Save model and encoder
-joblib.dump(model, 'email_classifier.pkl')
-joblib.dump(label_encoder, 'label_encoder.pkl')
+print("Model and vectorizer saved.")
