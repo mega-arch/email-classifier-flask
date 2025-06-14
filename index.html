@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Email Classifier</h1>
+        <p>Welcome, {{ username }} | <a href="/logout">Logout</a></p>
+
+        <form method="post" action="/predict">
+            <input type="text" name="subject" placeholder="Email Subject" required><br>
+            <textarea name="body" rows="6" placeholder="Email Body" required></textarea><br>
+            <button type="submit">Classify</button>
+        </form>
+
+        {% if prediction %}
+            <h3>Predicted Category: <span class="result">{{ prediction }}</span></h3>
+            <h4>Confidence Breakdown:</h4>
+            <ul>
+            {% for label, value in probabilities.items() %}
+                <li>{{ label }}: {{ value }}%</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
